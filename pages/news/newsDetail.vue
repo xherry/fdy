@@ -62,14 +62,7 @@
 		methods: {
 			// 获取网站信息
 			getWebInfo() {
-				this.$http({
-					url: "web/getInfo",
-					method: "POST",
-					data: {}
-				}).then(res => {
-					console.log("res===", res.data);
-					this.webInfo = res.data;
-				})
+				this.webInfo = uni.getStorageSync("webInfo");
 			},
 			//
 			getcurrent(e) {

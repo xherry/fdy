@@ -30,23 +30,25 @@
 		</view>
 		<view class="Cambria mt38">PROJECTS</view>
 		<view class="Cambria">为您准备更多选择</view>
-		<view class="navItems">
-			<view :class="classIndex===item.caseClassId?'active':''" @click="switchClass(item.caseClassId)"
-				v-for="(item,index) in caseClass" :key="index">{{item.className}}</view>
+		<scroll-view :scroll-into-view="caseClassIndex" :scroll-with-animation="true" class="navItems" scroll-x="true">
+			<view :class="classIndex==item.caseClassId?'active':''" :id="'caseClassId'+index"
+				@click="switchClass(item.caseClassId,index)" v-for="(item,index) in caseClass" :key="index">
+				{{item.className}}
+			</view>
 			<!-- <view>小程序</view>
-			<view>移动APP</view>
-			<view>官网</view> -->
-		</view>
+				<view>移动APP</view>
+				<view>官网</view> -->
+		</scroll-view>
 		<scroll-view scroll-y="true" @scrolltolower="scrolltolower" class="case">
 			<view class="caseItems">
-				<view v-for="(item,index) in caseList" :key="index">
+				<view v-for="(item,index) in caseList" @click="toCaseDetail(item)" :key="index">
 					<image class="bg" :src="item.caseImg" mode="aspectFill"></image>
 					<view class="caseBg">
 						<view>
-							<text class="word1">{{item.caseIntro}}</text>
+							<text class="word1">{{item.caseName}}</text>
 							<view class="word2s">
+								<text>{{item.caseIntro}}</text>
 								<text>{{item.className}}</text>
-								<text>{{item.caseName}}</text>
 							</view>
 						</view>
 					</view>
@@ -68,6 +70,7 @@
 		},
 		data() {
 			return {
+				caseClassIndex: "",
 				isShow: false,
 				pathIndex: 1,
 				page: 1,
@@ -80,12 +83,17 @@
 				current: 0
 			};
 		},
-		onLoad() {
+		onLoad(options) {
 			this.getBanner();
 			this.getWebInfo();
-			this.getCaseClass();
+			this.getCaseClass(options.id ? options.id : null);
 		},
 		methods: {
+			toCaseDetail(item) {
+				uni.navigateTo({
+					url: "./caseDetails/caseDetails?id=" + item.caseId
+				})
+			},
 			//
 			getcurrent(e) {
 				this.current = e.detail.current;
@@ -100,7 +108,8 @@
 					this.banner = res.data;
 				})
 			},
-			switchClass(id) {
+			switchClass(id, index) {
+				this.caseClassIndex = "caseClassId" + index;
 				this.classIndex = id;
 				this.page = 1;
 				this.caseList = [];
@@ -128,22 +137,23 @@
 					}
 				}).then(res => {
 					console.log("res===", res)
-					this.caseList = [...this.caseList,...res.data];
+					this.caseList = [...this.caseList, ...res.data];
 				})
 			},
 			// 获取网站信息
 			getWebInfo() {
-				this.$http({
-					url: "web/getInfo",
-					method: "POST",
-					data: {}
-				}).then(res => {
-					console.log("res===", res.data);
-					this.webInfo = res.data;
-				})
+				this.webInfo = uni.getStorageSync("webInfo");
+				// this.$http({
+				// 	url: "web/getInfo",
+				// 	method: "POST",
+				// 	data: {}
+				// }).then(res => {
+				// 	console.log("res===", res.data);
+				// 	this.webInfo = res.data;
+				// })
 			},
 			// 获取案例分类
-			getCaseClass() {
+			getCaseClass(id = null) {
 				// web/getAllClass
 				this.$http({
 					url: "web/getAllClass",
@@ -152,8 +162,19 @@
 				}).then(res => {
 					console.log("分类====", res)
 					this.caseClass = res.data;
-					this.classIndex = res.data[0].caseClassId;
-					this.getCaseList();
+					let index = 0;
+					for (let i = 0; i < res.data.length; i++) {
+						let item = res.data[i];
+						if (item.caseClassId == (id === null ? 0 : id)) {
+							index = i;
+							break;
+						}
+					};
+					this.$nextTick(() => {
+						this.caseClassIndex = "caseClassId" + index;
+						this.classIndex = index === null ? res.data[0].caseClassId : id;
+						this.getCaseList();
+					})
 				})
 			}
 		}
@@ -178,8 +199,6 @@
 		}
 
 		.navItems {
-			display: flex;
-			align-items: center;
 			width: 656rpx;
 			margin: 7px auto 0;
 			// justify-content: space-between;
@@ -187,16 +206,20 @@
 			padding: 0 30rpx;
 			border-top: 1px solid #0066FF;
 			border-bottom: 1px solid #0066FF;
+			white-space: nowrap;
 
 			view {
 				color: #333333;
 				font-size: 26rpx;
 				margin-right: 80rpx;
+				display: inline-block;
+				height: 70rpx;
+				line-height: 70rpx;
 			}
 
-			view:nth-child(4n) {
-				margin-right: 0;
-			}
+			// view:nth-child(4n) {
+			// 	margin-right: 0;
+			// }
 
 			.active {
 				color: #0066FF;

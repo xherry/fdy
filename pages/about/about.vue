@@ -87,15 +87,9 @@
 				this.isShow = true;
 			},
 			getInfo() {
-				this.$http({
-					url: "web/getInfo",
-					method: "POST",
-					data: {}
-				}).then(res => {
-					console.log("sssssssss===", res.data);
-					res.data.introduction = res.data.introduction.replace(/<img/, "<img style='width:100%'")
-					this.webInfo = res.data;
-				})
+				let webInfo = uni.getStorageSync("webInfo");
+				webInfo.introduction = webInfo.introduction.replace(/<img/, "<img style='width:100%;display: block;'");
+				this.webInfo = webInfo;
 			},
 		}
 	}

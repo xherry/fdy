@@ -62,6 +62,19 @@
             }
             
         }
+        ,{
+            "path" : "pages/case/caseDetails/caseDetails",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+				// #ifdef H5
+					,
+				"navigationStyle": "custom"
+				// #endif
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

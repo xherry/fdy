@@ -14,15 +14,6 @@
 					<swiper-item v-for="(item,index) in banner" :key="index">
 						<view class="swiper-item">
 							<image :src="item.bannerUrl" mode=""></image>
-							<!-- <view class="words">
-								<view class="wordsBody">
-									<view class="line"></view>
-									<view class="wordsOne">企业一站式服务平台</view>
-									<view class="wordsOther">给用户省心体验</view>
-									<view class="wordsOther">一站式开发服务 </view>
-								</view>
-							</view> -->
-
 						</view>
 					</swiper-item>
 				</swiper>
@@ -36,7 +27,7 @@
 			</view>
 			<view class="instructions">涉及领域广泛 用心服务每一位客户</view>
 			<view class="navItems">
-				<view v-for="(item,index) in caseClass" :key="index">
+				<view v-for="(item,index) in caseClass" @click="toCase(item)" :key="index">
 					<!-- :style="item.style" -->
 					<image :src="item.classImg" mode="aspectFill"></image>
 					<view>{{item.className}}</view>
@@ -51,14 +42,14 @@
 			</view>
 			<view style="color: #333333;" class="instructions">涉及领域广泛 客户满意是我们的目的</view>
 			<view class="caseItems">
-				<view v-for="(item,index) in caseList" :key="index">
+				<view v-for="(item,index) in caseList" @click="toCaseDetail(item)" :key="index">
 					<image class="bg" :src="item.caseImg" mode="aspectFill"></image>
 					<view class="caseBg">
 						<!-- <image :src="item.caseImg" mode=""></image> -->
 						<view>
 							<text class="word1">{{item.caseName}}</text>
 							<view class="word2s">
-								<text>{{item.isIndex}}</text>
+								<text>{{item.caseIntro}}</text>
 								<text>{{item.className}}</text>
 							</view>
 						</view>
@@ -112,7 +103,7 @@
 				caseList: [],
 				caseClass: [],
 				news: [],
-				webInfo:{}
+				webInfo: {}
 			}
 		},
 		onLoad() {
@@ -123,20 +114,32 @@
 			this.getWebInfo();
 		},
 		methods: {
-			toDetail(id){
+			toCaseDetail(item) {
 				uni.navigateTo({
-					url:"../news/newsDetail?id="+id
+					url: "../case/caseDetails/caseDetails?id=" + item.caseId
+				})
+			},
+			toCase(item) {
+				console.log(item);
+				uni.navigateTo({
+					url: "../case/case?id=" + item.caseClassId
+				})
+			},
+			toDetail(id) {
+				uni.navigateTo({
+					url: "../news/newsDetail?id=" + id
 				})
 			},
 			// 获取网站信息
-			getWebInfo(){
+			getWebInfo() {
 				this.$http({
 					url: "web/getInfo",
 					method: "POST",
 					data: {}
 				}).then(res => {
-					console.log("信息===",res.data);
+					console.log("信息===", res.data);
 					this.webInfo = res.data;
+					uni.setStorageSync("webInfo", res.data);
 				})
 			},
 			// 
@@ -246,18 +249,18 @@
 					image {
 						width: 162rpx;
 						height: 162rpx;
-						margin-right: 24rpx;
 						background-color: #ff0000;
 					}
 
 					.newWords {
-						flex: 1;
+						width: 70%;
 
 						.newWord1 {
 							color: #333333;
 							font-size: 26rpx;
 							display: inline-block;
 							width: 100%;
+							white-space: pre-wrap;
 							text-overflow: ellipsis;
 							overflow: hidden;
 							white-space: nowrap;
@@ -266,7 +269,8 @@
 						.newWord2 {
 							color: #A1A1A1;
 							font-size: 22rpx;
-							width: 100%;
+							// width: 100%;
+							white-space: pre-wrap;
 							display: -webkit-box;
 							-webkit-box-orient: vertical;
 							-webkit-line-clamp: 2;
@@ -287,13 +291,15 @@
 				height: 100%;
 				z-index: 99;
 				position: relative;
-				.webLogo{
+
+				.webLogo {
 					position: absolute;
 					width: 78rpx;
 					left: 68rpx;
 					top: 30rpx;
 					z-index: 9999;
 				}
+
 				.iconCircle {
 					display: flex;
 					align-items: center;
@@ -502,7 +508,7 @@
 				align-items: center;
 				width: 100%;
 				flex-wrap: wrap;
-				// justify-content: space-between;
+				justify-content: center;
 
 				>view:active {
 					opacity: .7;

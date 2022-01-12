@@ -1,5 +1,5 @@
 {
-    "name" : "峰朵云",
+    "name" : "峄朵云",
     "appid" : "__UNI__C9D643E",
     "description" : "",
     "versionName" : "1.0.0",
@@ -106,6 +106,7 @@
         "router" : {
             "mode" : "hash",
             "base" : "./"
-        }
+        },
+        "title" : "峄朵云"
     }
 }

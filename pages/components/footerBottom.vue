@@ -2,7 +2,7 @@
 	<view class="footerBottom">
 		<view class="contactUs">
 			<image src="../../static/index/group14.png" mode="aspectFill"></image>
-			<view class="contactUsText"> <text>联系我们，我们将为您最优质的服务<br />感谢您的支持</text></view>
+			<view class="contactUsText"> <text>联系我们，我们将为您提供最优质的服务<br />感谢您的支持</text></view>
 		</view>
 		<view class="footer">
 			<view class="footer_left">
